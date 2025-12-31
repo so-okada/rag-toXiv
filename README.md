@@ -51,7 +51,7 @@ and OpenRouter API.  rag-toXiv is not affiliated with arXiv.
   pages.  First, this can be due to bugs in scripts or
   instance connection errors.  Second, items of arXiv RSS feeds are not
   necessarily the same as those of arXiv new submission web
-  pages (see https://mastoxiv.page/@vela/109829294232368163).
+  pages (see the second item of https://github.com/so-okada/twXiv?tab=readme-ov-file#notes)
 
 * arXiv does not publish new submissions on weekends.  Schedule
   your cron jobs accordingly (Monday through Friday).
@@ -61,7 +61,7 @@ and OpenRouter API.  rag-toXiv is not affiliated with arXiv.
   replies are posted as unlisted to avoid flooding public timelines.
 
 * On the use of metadata of arXiv articles, there is the web page of
-  [Terms of Use for arXiv APIs](https://arxiv.org/help/api/tou).  
+  [Terms of Use for arXiv APIs](https://arxiv.org/help/api/tou).
   This says that "You are free to use
   descriptive metadata about arXiv e-prints under the terms of the
   Creative Commons Universal (CC0 1.0) Public Domain Declaration." and
@@ -153,6 +153,12 @@ CLI commands:
   /quit            - Exit
 ```
 
+### Simple Example
+
+	```
+	% python save_daily_json.py cs.LG cs.AI
+	% python3 rag_toXiv_reply_bot.py --daemon
+	```
 
 ## Sample Interactions
 
@@ -209,12 +215,7 @@ CLI commands:
 	```
 
 
-* Collecting Daily Feeds and Running Reply Bot as a Daemon
 
-	```
-	% python save_daily_json.py cs.LG cs.AI
-	% python3 rag_toXiv_reply_bot.py --daemon
-	```
 	
 ## Directory Structure
 
