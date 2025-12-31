@@ -157,7 +157,7 @@ CLI commands:
 
 	```
 	% python save_daily_json.py cs.LG cs.AI
-	% python3 rag_toXiv_reply_bot.py --daemon
+	% python rag_toXiv_reply_bot.py --daemon
 	```
 
 ## Sample Interactions
