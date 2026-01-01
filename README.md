@@ -126,15 +126,6 @@ Examples:
 
 	....
 	
-	Commands:
-	  /cat <category>  - Change category (e.g., /cat math.CO)
-	  /mode <mode>     - Change mode (title, first_sentence, full_abstract)
-	  /files <n>       - Change files to load (e.g., /files 3)
-	  /list            - List available categories
-	  /help            - Show help message
-	  /quit            - Exit
-	============================================================
-	
 	[cs.LG] >>> any papers on transformers?
 	Based on today's cs.LG submissions, here are papers related to 
 	transformers:
