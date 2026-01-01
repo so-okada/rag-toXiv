@@ -11,7 +11,7 @@ from rag_arXiv_daily_feed import daily_entries
 from rag_toXiv_variables import DATA_DIR, DEFAULT_CATEGORY, CAT_MAX_FILES, SKIP_EMPTY
 
 
-def save_feed_json(category: str, aliases: dict = None):
+def save_feed_json(category: str, aliases: dict = None, dry_run: bool = False):
     """Fetch via toXiv_daily_feed and save as JSON."""
     os.makedirs(DATA_DIR, exist_ok=True)
 
@@ -51,10 +51,12 @@ def save_feed_json(category: str, aliases: dict = None):
     filename = f"{date_str}_{category.replace('.', '_')}.json"
     filepath = os.path.join(DATA_DIR, filename)
 
-    with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-    print(f"Saved {len(data['papers'])} papers to {filepath}")
+    if dry_run:
+        print(f"Would save {len(data['papers'])} papers to {filepath}")
+    else:
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        print(f"Saved {len(data['papers'])} papers to {filepath}")
     return filepath
 
 
@@ -227,10 +229,11 @@ if __name__ == "__main__":
         print("  --category <cat>        Specify category for cleanup/list")
         print("  --skip-empty=1          Skip empty files when counting (default)")
         print("  --skip-empty=0          Count empty files toward limit")
-        print("  --dry-run               Show what would be deleted without deleting")
+        print("  --dry-run               Show what would be saved/deleted without doing it")
         print("")
         print("Examples:")
         print("  python save_daily_json.py cs.LG")
+        print("  python save_daily_json.py cs.LG --dry-run")
         print("  python save_daily_json.py cs.AI cs.LG math.CT")
         print("  python save_daily_json.py --cleanup 30")
         print("  python save_daily_json.py --cleanup 30 --category cs.LG")
@@ -314,5 +317,5 @@ if __name__ == "__main__":
 
     aliases = {}
     for cat in categories:
-        print(f"\n--- Fetching {cat} ---")
-        save_feed_json(cat, aliases)
+        print(f"\n--- Fetching {cat}  [{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}] ---")
+        save_feed_json(cat, aliases, dry_run=dry_run)

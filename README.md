@@ -89,30 +89,12 @@ and OpenRouter API.  rag-toXiv is not affiliated with arXiv.
 ```
 % python save_daily_json.py -h
 Usage: python save_daily_json.py [categories...] [options]
-
-Commands:
-  <category> [category2...]  Fetch and save today's feed for categories
-  --cleanup <days>           Delete files older than n days
-  --cleanup-by-cat-max-files <n>  Keep only n files per category
-  --list                     List all data files
-
-Options:
-  --category <cat>        Specify category for cleanup/list
-  --skip-empty=1          Skip empty files when counting (default)
-  --skip-empty=0          Count empty files toward limit
-  --dry-run               Show what would be deleted without deleting
+....
 
 Examples:
   python save_daily_json.py cs.LG
-  python save_daily_json.py cs.AI cs.LG math.CT
-  python save_daily_json.py --cleanup 30
-  python save_daily_json.py --cleanup 30 --category cs.LG
-  python save_daily_json.py --cleanup 30 --dry-run
   python save_daily_json.py --cleanup-by-cat-max-files 7
-  python save_daily_json.py --cleanup-by-cat-max-files 7 --skip-empty=0
-  python save_daily_json.py --cleanup-by-cat-max-files 7 --category cs.LG --dry-run
   python save_daily_json.py --list
-  python save_daily_json.py --list --category cs.LG
 ```
 
 
@@ -120,37 +102,13 @@ Examples:
 
 ```
 % python rag_toXiv_reply_bot.py --help
-Usage: python rag_toXiv_reply_bot.py [options]
 
-Modes:
-  --cli             Interactive command-line mode
-  --daemon          Run Mastodon bot continuously
-  --once            Process Mastodon mentions once and exit (default)
-
-Options:
-  --dry-run            Don't actually post replies (Mastodon modes)
-  --category <cat>     Set initial category (CLI mode, e.g., --category math.CO)
-  --cat-max-files <n>  Number of data files to load per category (default: 1)
-
-Context modes (choose one):
-  --title           Use paper titles only
-  --first-sentence  Use titles + first sentence of abstract (default)
-  --full-abstract   Use titles + full abstracts
+....
 
 Examples:
   python rag_toXiv_reply_bot.py --cli
-  python rag_toXiv_reply_bot.py --cli --full-abstract --category cs.AI
-  python rag_toXiv_reply_bot.py --cli --cat-max-files 3
   python rag_toXiv_reply_bot.py --once --dry-run
-  python rag_toXiv_reply_bot.py --daemon --full-abstract --cat-max-files 7
-
-CLI commands:
-  /cat <category>  - Change category
-  /mode <mode>     - Change context mode
-  /files <n>       - Change number of files to load
-  /list            - List available categories
-  /help            - Show help
-  /quit            - Exit
+  python rag_toXiv_reply_bot.py --daemon --full-abstract 
 ```
 
 ### Simple Example
@@ -166,14 +124,8 @@ CLI commands:
 
 	```
 	% python rag_toXiv_reply_bot.py --cli
-	============================================================
-	arXiv Paper Assistant - CLI Mode
-	============================================================
-	Context mode: first_sentence
-	Current category: cs.LG
-	Files to load: 1
-	LLM model: xiaomi/mimo-v2-flash:free
-	Available categories: cs.LG, math.CO
+
+	....
 	
 	Commands:
 	  /cat <category>  - Change category (e.g., /cat math.CO)
