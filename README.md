@@ -12,7 +12,7 @@ and OpenRouter API.  rag-toXiv is not affiliated with arXiv.
 * Install required packages.
 
 	```
-	% pip3 install Mastodon.py feedparser ratelimit python-dotenv openai python-dateutil
+	% pip install Mastodon.py feedparser ratelimit python-dotenv openai python-dateutil
 	```
 
 * Put the following python scripts in the same directory.
@@ -107,11 +107,10 @@ Examples:
 
 Examples:
   python rag_toXiv_reply_bot.py --cli
-  python rag_toXiv_reply_bot.py --once --dry-run
   python rag_toXiv_reply_bot.py --daemon --full-abstract 
 ```
 
-### Simple Example
+### Collecting and Running
 
 	```
 	% python save_daily_json.py cs.LG cs.AI
@@ -166,9 +165,6 @@ Examples:
 	        This paper introduces...
 	```
 
-
-
-	
 ## Directory Structure
 
 ```
@@ -180,8 +176,7 @@ rag-toXiv/
 ├── save_daily_json.py        # Daily feed collection script
 ├── .env                      # API keys (not in repo)
 ├── data/                     # Daily JSON feeds
-│   ├── 2025-01-07_cs_LG.json
-│   └── ...
+│   ├── xxxx_cs_LG.json ...
 └── logs/                     # Bot logs
     ├── processed_notifications.json
     └── bot_interactions.log
