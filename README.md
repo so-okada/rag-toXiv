@@ -162,7 +162,7 @@ rag-toXiv/
     ├── processed_notifications.json
     └── bot_interactions.log
 ```
-## Example
+## Bot Example
 
 https://mastoxiv.page/@ragtoXiv
 
