@@ -13,7 +13,7 @@ url_margin = 2
 arxiv_call_limit = 1
 arxiv_call_period = 5
 
-arxiv_max_trial = 1
+arxiv_max_trial = 2
 arxiv_call_sleep = 2 * 60
 
 # 300 for 5mins per account/ip
