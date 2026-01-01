@@ -130,18 +130,8 @@ Examples:
 	Based on today's cs.LG submissions, here are papers related to 
 	transformers:
 
-	1. https://arxiv.org/abs/2512.xxxxx - "Efficient Transformer 
-	   Architecture for Long Sequences"
+	1. https://arxiv.org/abs/2512.xxxxx - "yyyyyyyyy"
 	   This paper proposes a novel attention mechanism...
-	
-	[cs.LG] >>> /cat math.CO
-	Category changed to: math.CO
-	
-	[math.CO] >>> /files 3
-	Files changed to 3 (45 papers loaded)
-	
-	[math.CO] >>> /quit
-	Goodbye!
 	```
 
 * Mastodon interaction:
@@ -152,7 +142,7 @@ Examples:
 	Bot: Based on recent cs.LG papers, here are submissions related 
 	     to graph neural networks:
 	     
-	     1. https://arxiv.org/abs/2512.xxxxx - "GNN-based Approach..."
+	     1. https://arxiv.org/abs/2512.xxxxx - "yyyyyyyyyy..."
 	        This paper introduces...
 	```
 
