@@ -12,6 +12,7 @@ data/
 logs/
 *.pyc
 old/
+202*
 
 !.gitignore
 !tests/
