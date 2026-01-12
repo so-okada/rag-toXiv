@@ -70,12 +70,18 @@ def is_empty_file(filepath: str) -> bool:
         return False
 
 
-def cleanup_old_files(days: int, category: str = None, dry_run: bool = False):
+def cleanup_old_files(
+    days: int,
+    category: str = None,
+    skip_empty: bool = SKIP_EMPTY,
+    dry_run: bool = False,
+):
     """Delete JSON files older than n days.
 
     Args:
         days: Delete files older than this many days
         category: If specified, only delete files for this category
+        skip_empty: If True, don't delete empty files
         dry_run: If True, only print what would be deleted
     """
     if not os.path.exists(DATA_DIR):
@@ -92,10 +98,10 @@ def cleanup_old_files(days: int, category: str = None, dry_run: bool = False):
 
     files = glob.glob(pattern)
     deleted_count = 0
+    skipped_count = 0
 
-    for filepath in files:
+    for filepath in sorted(files):
         filename = os.path.basename(filepath)
-        # Extract date from filename (YYYY-MM-DD_category.json)
         try:
             file_date_str = filename[:10]
             file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
@@ -105,6 +111,13 @@ def cleanup_old_files(days: int, category: str = None, dry_run: bool = False):
             continue
 
         if file_date.date() < cutoff_date.date():
+            empty = is_empty_file(filepath)
+
+            if skip_empty and empty:
+                print(f"Skipping empty: {filename}")
+                skipped_count += 1
+                continue
+
             if dry_run:
                 print(f"Would delete: {filename}")
             else:
@@ -113,14 +126,18 @@ def cleanup_old_files(days: int, category: str = None, dry_run: bool = False):
             deleted_count += 1
 
     action = "Would delete" if dry_run else "Deleted"
+    skip_msg = f", skipped {skipped_count} empty" if skipped_count > 0 else ""
     print(
-        f"\n{action} {deleted_count} file(s) older than {days} days (before {cutoff_str})"
+        f"\n{action} {deleted_count} file(s) older than {days} days (before {cutoff_str}){skip_msg}"
     )
     return deleted_count
 
 
 def cleanup_by_cat_max_files(
-    max_files: int, category: str = None, skip_empty: bool = SKIP_EMPTY, dry_run: bool = False
+    max_files: int,
+    category: str = None,
+    skip_empty: bool = SKIP_EMPTY,
+    dry_run: bool = False,
 ):
     """Keep only the most recent n files per category, delete the rest.
 
@@ -138,22 +155,27 @@ def cleanup_by_cat_max_files(
     if category:
         categories = [category]
     else:
-        # Find all unique categories from filenames
         files = glob.glob(os.path.join(DATA_DIR, "*.json"))
         categories = set()
         for f in files:
             basename = os.path.basename(f)
             parts = basename.split("_", 1)
             if len(parts) == 2:
-                cat = parts[1].replace("_", ".").replace(".json", "")
-                categories.add(cat)
+                cat_part = parts[1].replace(".json", "").replace("_", ".")
+                categories.add(cat_part)
         categories = sorted(categories)
+
+    if not categories:
+        print("No categories found")
+        return 0
 
     total_deleted = 0
 
     for cat in categories:
         pattern = os.path.join(DATA_DIR, f"*_{cat.replace('.', '_')}.json")
         file_list = sorted(glob.glob(pattern), reverse=True)  # newest first
+
+        print(f"\n--- {cat} ({len(file_list)} files) ---")
 
         kept_count = 0
         files_to_delete = []
@@ -163,26 +185,27 @@ def cleanup_by_cat_max_files(
             empty = is_empty_file(filepath)
 
             if skip_empty and empty:
-                # Skip empty files entirely - don't count, don't delete
+                print(f"  Skipping empty: {filename}")
                 continue
 
             if kept_count < max_files:
                 kept_count += 1
+                print(f"  Keeping: {filename}")
             else:
                 files_to_delete.append((filepath, filename))
 
-        if files_to_delete:
-            print(f"\n--- {cat} ---")
-            for filepath, filename in files_to_delete:
-                if dry_run:
-                    print(f"Would delete: {filename}")
-                else:
-                    os.remove(filepath)
-                    print(f"Deleted: {filename}")
-                total_deleted += 1
+        for filepath, filename in files_to_delete:
+            if dry_run:
+                print(f"  Would delete: {filename}")
+            else:
+                os.remove(filepath)
+                print(f"  Deleted: {filename}")
+            total_deleted += 1
 
     action = "Would delete" if dry_run else "Deleted"
-    print(f"\n{action} {total_deleted} file(s) total (keeping {max_files} per category)")
+    print(
+        f"\n{action} {total_deleted} file(s) total (keeping {max_files} per category)"
+    )
     return total_deleted
 
 
@@ -220,27 +243,34 @@ if __name__ == "__main__":
         print("Usage: python save_daily_json.py [categories...] [options]")
         print("")
         print("Commands:")
-        print("  <category> [category2...]  Fetch and save today's feed for categories")
-        print("  --cleanup <days>           Delete files older than n days")
+        print(
+            "  <category> [category2...]       Fetch and save today's feed for categories"
+        )
+        print("  --cleanup <days>                Delete files older than n days")
         print("  --cleanup-by-cat-max-files <n>  Keep only n files per category")
-        print("  --list                     List all data files")
+        print("  --list                          List all data files")
         print("")
         print("Options:")
         print("  --category <cat>        Specify category for cleanup/list")
-        print("  --skip-empty=1          Skip empty files when counting (default)")
-        print("  --skip-empty=0          Count empty files toward limit")
-        print("  --dry-run               Show what would be saved/deleted without doing it")
+        print("  --skip-empty=1          Skip empty files (default)")
+        print("  --skip-empty=0          Include empty files")
+        print(
+            "  --dry-run               Show what would be saved/deleted without doing it"
+        )
         print("")
         print("Examples:")
         print("  python save_daily_json.py cs.LG")
         print("  python save_daily_json.py cs.LG --dry-run")
         print("  python save_daily_json.py cs.AI cs.LG math.CT")
         print("  python save_daily_json.py --cleanup 30")
+        print("  python save_daily_json.py --cleanup 30 --skip-empty=0")
         print("  python save_daily_json.py --cleanup 30 --category cs.LG")
         print("  python save_daily_json.py --cleanup 30 --dry-run")
         print("  python save_daily_json.py --cleanup-by-cat-max-files 7")
         print("  python save_daily_json.py --cleanup-by-cat-max-files 7 --skip-empty=0")
-        print("  python save_daily_json.py --cleanup-by-cat-max-files 7 --category cs.LG --dry-run")
+        print(
+            "  python save_daily_json.py --cleanup-by-cat-max-files 7 --category cs.LG --dry-run"
+        )
         print("  python save_daily_json.py --list")
         print("  python save_daily_json.py --list --category cs.LG")
         sys.exit(0)
@@ -290,7 +320,9 @@ if __name__ == "__main__":
         if idx + 1 < len(sys.argv):
             try:
                 days = int(sys.argv[idx + 1])
-                cleanup_old_files(days, category=category, dry_run=dry_run)
+                cleanup_old_files(
+                    days, category=category, skip_empty=skip_empty, dry_run=dry_run
+                )
             except ValueError:
                 print("Error: --cleanup requires a number of days")
                 sys.exit(1)
@@ -300,7 +332,6 @@ if __name__ == "__main__":
         sys.exit(0)
 
     # Default: fetch and save
-    # Filter out option values
     clean_args = []
     skip_next = False
     for i, arg in enumerate(sys.argv[1:]):
@@ -317,5 +348,7 @@ if __name__ == "__main__":
 
     aliases = {}
     for cat in categories:
-        print(f"\n--- Fetching {cat}  [{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}] ---")
+        print(
+            f"\n--- Fetching {cat}  [{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}] ---"
+        )
         save_feed_json(cat, aliases, dry_run=dry_run)

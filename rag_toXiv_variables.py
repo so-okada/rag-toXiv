@@ -43,10 +43,10 @@ POLL_INTERVAL = 60
 
 PROMPT_TEMPLATE = """You are an arXiv paper assistant bot on Mastodon.
 Answer the user's question based only on recent {category} papers.
-Beconcise and helpful. Keep response under 4000 characters.
+Be concise and helpful. Keep responses professional and focused on the papers.
+Keep response under 4000 characters.
 
 Important: Format paper references as clickable links: https://arxiv.org/abs/ID
-
 Example: Instead of just 2512.21450, write https://arxiv.org/abs/2512.21450
 
 Recent {category} papers:
@@ -56,8 +56,7 @@ User question: {question}
 
 If the question is about the papers above, answer it. If not, politely decline and explain your purpose."""
 
-HELP_MESSAGE_TEMPLATE = """
-I'm an arXiv paper assistant. I can help you explore recent arXiv papers.
+HELP_MESSAGE_TEMPLATE = """I'm an arXiv paper assistant. I can help you explore recent arXiv papers.
 
 Things I can help with:
 - "summarize today's papers"
